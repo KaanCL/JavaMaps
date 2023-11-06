@@ -13,6 +13,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,8 +31,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.javamaps.databinding.ActivityMapsBinding;
 import com.google.android.material.snackbar.Snackbar;
+import android.location.Geocoder;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import java.io.IOException;
+import java.util.List;
+
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLongClickListener {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
@@ -63,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this);
 
        //Casting
 
@@ -70,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
       locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
+
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 info=shaderedPreferences.getBoolean("info",false);
                 if (lastLocationMarker != null) {
@@ -150,5 +159,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    @Override
+    public void onMapLongClick(@NonNull LatLng latLng) {
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(latLng));
 
+    }
 }
