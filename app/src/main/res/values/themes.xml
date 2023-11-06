@@ -6,4 +6,9 @@
     </style>
 
     <style name="Theme.JavaMaps" parent="Base.Theme.JavaMaps" />
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Temanızın özelleştirmelerini burada tanımlayabilirsiniz -->
+    </style>
+
 </resources>
