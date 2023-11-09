@@ -11,8 +11,11 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
@@ -47,6 +50,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SharedPreferences shaderedPreferences;
     Boolean info;
     Marker lastLocationMarker;
+    SQLiteDatabase database;
+    Double longitude,latitude;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         registerLauncher();
+
 
         shaderedPreferences = this.getSharedPreferences("com.example.javamaps",MODE_PRIVATE);
         info = false;
@@ -164,5 +172,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(latLng));
 
+        latitude=latLng.latitude;
+        longitude=latLng.longitude;
+
+
     }
+
+    public void save(View view){
+
+        String placeName = binding.placeText.getText().toString();
+
+
+
+
+        try{
+            database=this.openOrCreateDatabase("Place",MODE_PRIVATE,null);
+            database.execSQL("CREATE TABLE IF NOT EXISTS place(id INTEGER PRIMARY KEY, placename VARCHAR, latitude DOUBLE,longitude DOUBLE)");
+
+            String sqlString="INSERT INTO place(placename,latitude,longitude)VALUES(?,?,?)";
+            SQLiteStatement sqLiteStatement=database.compileStatement(sqlString);
+                      sqLiteStatement.bindString(1,placeName);
+                      sqLiteStatement.bindDouble(2,latitude);
+                      sqLiteStatement.bindDouble(3,longitude);
+                      sqLiteStatement.execute();
+
+
+
+
+
+        }catch (Exception e){}
+
+        Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+
+
+
+
+
+    }
+
+
+
+
 }

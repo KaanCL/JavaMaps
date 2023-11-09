@@ -7,14 +7,13 @@
 >
 
     <TextView
+        android:id="@+id/PlaceText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test"
-        android:textSize="22sp"
-        android:textColor="@color/black"
         android:layout_margin="5dp"
-        >
-
+        android:text="Test"
+        android:textColor="@color/black"
+        android:textSize="22sp">
 
 
     </TextView>
