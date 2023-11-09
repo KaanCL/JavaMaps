@@ -1,6 +1,8 @@
 package com.example.javamaps;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
     @Override
     public void onBindViewHolder(PlaceAdapter.PlaceHolder holder, int position) {
     holder.binding.PlaceText.setText(placeArrayList.get(position).placename);
+
+    holder.itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(holder.itemView.getContext(),MapsActivity.class);
+        intent.putExtra("placename",placeArrayList.get(position).placename);
+        holder.itemView.getContext().startActivity(intent);
+
+      }
+    });
+
+
+
     }
     @Override
     public int getItemCount() {

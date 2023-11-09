@@ -52,6 +52,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker lastLocationMarker;
     SQLiteDatabase database;
     Double longitude,latitude;
+    String placename;
+
 
 
 
@@ -69,6 +71,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         registerLauncher();
 
+        Intent intent =getIntent();
+        String m_placename = intent.getStringExtra("placename");
+
+        if(m_placename!=null){
+
+            binding.saveButton.setVisibility(View.INVISIBLE);
+            binding.placeText.setText(m_placename);
+        }
 
         shaderedPreferences = this.getSharedPreferences("com.example.javamaps",MODE_PRIVATE);
         info = false;
@@ -180,7 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void save(View view){
 
-        String placeName = binding.placeText.getText().toString();
+         placename = binding.placeText.getText().toString();
 
 
 
@@ -191,7 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             String sqlString="INSERT INTO place(placename,latitude,longitude)VALUES(?,?,?)";
             SQLiteStatement sqLiteStatement=database.compileStatement(sqlString);
-                      sqLiteStatement.bindString(1,placeName);
+                      sqLiteStatement.bindString(1,placename);
                       sqLiteStatement.bindDouble(2,latitude);
                       sqLiteStatement.bindDouble(3,longitude);
                       sqLiteStatement.execute();
