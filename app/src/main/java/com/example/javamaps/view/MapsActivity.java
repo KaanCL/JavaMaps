@@ -1,13 +1,13 @@
-package com.example.javamaps;
+package com.example.javamaps.view;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.room.Room;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,8 +15,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +22,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.javamaps.R;
+import com.example.javamaps.model.Place;
+import com.example.javamaps.roomDB.PlaceDao;
+import com.example.javamaps.roomDB.PlaceDatabase;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -34,10 +36,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.javamaps.databinding.ActivityMapsBinding;
 import com.google.android.material.snackbar.Snackbar;
-import android.location.Geocoder;
-
-import java.io.IOException;
-import java.util.List;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLongClickListener {
@@ -53,6 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SQLiteDatabase database;
     Double longitude,latitude;
     String placename;
+    PlaceDatabase db;
+    PlaceDao placeDao;
 
 
 
@@ -72,17 +72,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         registerLauncher();
 
         Intent intent =getIntent();
-        String m_placename = intent.getStringExtra("placename");
-
-        if(m_placename!=null){
-
-            binding.saveButton.setVisibility(View.INVISIBLE);
-            binding.placeText.setText(m_placename);
-        }
-
         shaderedPreferences = this.getSharedPreferences("com.example.javamaps",MODE_PRIVATE);
         info = false;
         lastLocationMarker=null;
+
+        db= Room.databaseBuilder(getApplicationContext(),PlaceDatabase.class,"Places").build();
+        placeDao=db.placeDao();
+
+        binding.saveButton.setEnabled(false);
+
+        longitude=0.0;
+        latitude=0.0;
+
+
+
 
     }
     @Override
@@ -185,10 +188,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         latitude=latLng.latitude;
         longitude=latLng.longitude;
 
+        binding.saveButton.setEnabled(true);
+
 
     }
 
-    public void save(View view){
+
+    public  void Save(View view){
+
+   Place place = new Place(binding.placeText.getText().toString(),latitude,longitude);
+
+   placeDao.insert(place);
+
+
+    }
+
+
+
+
+
+
+   /* public void save(View view){
 
          placename = binding.placeText.getText().toString();
 
@@ -206,22 +226,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                       sqLiteStatement.bindDouble(3,longitude);
                       sqLiteStatement.execute();
 
-
-
-
-
         }catch (Exception e){}
 
         Intent intent = new Intent(MapsActivity.this,MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }*/
 
 
-
-
-
-    }
 
 
 

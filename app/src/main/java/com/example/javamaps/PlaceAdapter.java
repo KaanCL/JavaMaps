@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.javamaps.databinding.RecyclerRowBinding;
+import com.example.javamaps.model.Place;
+import com.example.javamaps.view.MapsActivity;
 
 import java.util.ArrayList;
 
@@ -36,7 +36,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
     holder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(holder.itemView.getContext(),MapsActivity.class);
+        Intent intent = new Intent(holder.itemView.getContext(), MapsActivity.class);
         intent.putExtra("placename",placeArrayList.get(position).placename);
         holder.itemView.getContext().startActivity(intent);
 

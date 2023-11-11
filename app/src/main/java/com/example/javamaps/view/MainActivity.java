@@ -1,20 +1,20 @@
-package com.example.javamaps;
+package com.example.javamaps.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.javamaps.PlaceAdapter;
+import com.example.javamaps.R;
 import com.example.javamaps.databinding.ActivityMainBinding;
+import com.example.javamaps.model.Place;
 
 import java.util.ArrayList;
 
@@ -36,11 +36,11 @@ private ActivityMainBinding binding;
         placeAdapter = new PlaceAdapter(placeArrayList);
         binding.recyclerView.setAdapter(placeAdapter);
 
-       getData();
+       //getData();
 
     }
 
-    public void getData(){
+  /*  public void getData(){
 
         try {
             SQLiteDatabase database = this .openOrCreateDatabase("Place",MODE_PRIVATE,null);
@@ -64,7 +64,7 @@ private ActivityMainBinding binding;
 
 
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
