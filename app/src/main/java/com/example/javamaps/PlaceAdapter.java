@@ -12,12 +12,13 @@ import com.example.javamaps.model.Place;
 import com.example.javamaps.view.MapsActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder> {
-  ArrayList<Place> placeArrayList;
+  List<Place> placeList;
 
-  public PlaceAdapter(ArrayList<Place> placeArrayList){
-      this.placeArrayList = placeArrayList;
+  public PlaceAdapter(List<Place> placeList){
+      this.placeList = placeList;
   }
 
 
@@ -31,13 +32,13 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
 
     @Override
     public void onBindViewHolder(PlaceAdapter.PlaceHolder holder, int position) {
-    holder.binding.PlaceText.setText(placeArrayList.get(position).placename);
+    holder.binding.PlaceText.setText(placeList.get(position).placename);
 
     holder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         Intent intent = new Intent(holder.itemView.getContext(), MapsActivity.class);
-        intent.putExtra("placename",placeArrayList.get(position).placename);
+        intent.putExtra("placename",placeList.get(position).placename);
         holder.itemView.getContext().startActivity(intent);
 
       }
@@ -48,7 +49,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
     }
     @Override
     public int getItemCount() {
-        return placeArrayList.size();
+        return placeList.size();
     }
 
 

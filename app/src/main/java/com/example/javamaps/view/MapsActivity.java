@@ -37,11 +37,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.javamaps.databinding.ActivityMapsBinding;
 import com.google.android.material.snackbar.Snackbar;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback , OnMapLongClickListener {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     ActivityResultLauncher<String> permissionLauncher;
     LocationManager locationManager;
     LocationListener locationListener;
@@ -53,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String placename;
     PlaceDatabase db;
     PlaceDao placeDao;
+
 
 
 
@@ -76,7 +83,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         info = false;
         lastLocationMarker=null;
 
-        db= Room.databaseBuilder(getApplicationContext(),PlaceDatabase.class,"Places").build();
+        db= Room.databaseBuilder(getApplicationContext(),PlaceDatabase.class,"Places")
+               // .allowMainThreadQueries()
+                .build();
         placeDao=db.placeDao();
 
         binding.saveButton.setEnabled(false);
@@ -190,23 +199,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         binding.saveButton.setEnabled(true);
 
-
     }
 
 
-    public  void Save(View view){
+    public void Save(View view){
 
    Place place = new Place(binding.placeText.getText().toString(),latitude,longitude);
 
-   placeDao.insert(place);
+        compositeDisposable.add(placeDao.insert(place)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(MapsActivity.this::handleResponse)
+        );
+    }
 
+    private void handleResponse(){
+        Intent intent = new Intent(MapsActivity.this,MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 
+    public void delete(View view){
 
+       /* Place place = new Place();
 
+        //placeDao.insert(place).subscribeOn(Schedulers.io().subscribe);
 
-
+        compositeDisposable.add(placeDao.insert(place)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+        );*/
+    }
 
    /* public void save(View view){
 
@@ -233,10 +258,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
 
     }*/
-
-
-
-
 
 
 }
